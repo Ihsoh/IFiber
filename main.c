@@ -25,14 +25,14 @@ int main(int argc, char * argv[])
 	InitMainFiber(&fbrmain);
 	InitFiber(&fbrf0, f0);
 	InitFiber(&fbrf1, f1);
-	printf("%main-0%\n");
+	printf("@main-0@\n");
 	SwitchFiber(&fbrmain, &fbrf0);
-	printf("%main-1%\n");
+	printf("@main-1@\n");
 	SwitchFiber(&fbrmain, &fbrf1);
-	printf("%main-2%\n");
+	printf("@main-2@\n");
 	SwitchFiber(&fbrmain, &fbrf0);
-	printf("%main-3%\n");
+	printf("@main-3@\n");
 	SwitchFiber(&fbrmain, &fbrf1);
-	printf("%main-4%\n");
+	printf("@main-4@\n");
 	return 0;
 }

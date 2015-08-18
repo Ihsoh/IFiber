@@ -1,7 +1,7 @@
 OUT=ifiber.exe
 OBJS=fiber.obj main.obj
 CC=gcc
-CFLAGS=-O2
+CFLAGS=-O2 -m32 -march=i386 -mtune=i386
 
 $(OUT): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(OUT)
