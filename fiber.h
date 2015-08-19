@@ -1,7 +1,7 @@
-#ifndef	_FIBER_H_
-#define	_FIBER_H_
+#ifndef	_IFIBER_FIBER_H_
+#define	_IFIBER_FIBER_H_
 
-#define	FIBER_STACK_SIZE	(16 * 1024)
+#define	FIBER_STACK_SIZE	(64 * 1024)				// Fiber stack size.
 
 typedef struct 
 {
@@ -20,14 +20,14 @@ typedef	SSEStatus * SSEStatusPtr;
 
 typedef struct
 {
-	unsigned int		esp;
-	unsigned int		eip;
-	unsigned int		null0;
-	unsigned int		null1;
-	SSEStatus			sse_status;
-	I387Status			i387_status;
-	int					first;
-	unsigned char		stack[FIBER_STACK_SIZE];
+	unsigned int		esp;						// Fiber stack pointer.
+	unsigned int		eip;						// Fiber instruction pointer.
+	unsigned int		null0;						// Reserved.
+	unsigned int		null1;						// Reserved.
+	SSEStatus			sse_status;					// SSE Context.
+	I387Status			i387_status;				// Intel 80387 Context.
+	int					first;						// 0 if first run, 1 if not first run.
+	unsigned char		stack[FIBER_STACK_SIZE];	// Fiber stack.
 } Fiber, * FiberPtr;
 
 typedef void (* FiberFunction)(void);

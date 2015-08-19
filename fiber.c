@@ -44,6 +44,7 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"=m"(current->sse_status));
 	
 	// Resume target context and jump to target.
+	// Does not resume target context if switch to target context fisrt!
 	if(target->first)
 	{
 		target->first = 0;
@@ -51,8 +52,24 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"movl		%0, %%esp\n\t"
 						"pushl		%%eax\n\t"
 						"movl		%1, %%eax\n\t"
+						// |        ...         |
+						// *--------------------*
+						// |     Target EIP     |	<- ESP - 4 point to here!
+						// *--------------------*
+						// |        EAX         |	<- ESP point to here!
+						// *--------------------*
+						// |        ...         |
+						// |    Stack Bottom    |
 						"movl		%%eax, -4(%%esp)\n\t"
 						"popl		%%eax\n\t"
+						// |        ...         |
+						// *--------------------*
+						// |     Target EIP     |	<- ESP - 8 point to here!
+						// *--------------------*
+						// |        EAX         |	<- ESP - 4
+						// *--------------------*
+						// |        ...         |	<- ESP point to here!
+						// |    Stack Bottom    |
 						"jmp		*2*-4(%%esp)\n\t"
 						:
 						:	"m"(target->esp),
@@ -64,6 +81,30 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"fxrstor	%3\n\t"
 						"pushl		%%eax\n\t"
 						"movl		%1, %%eax\n\t"
+						// |        ...         |
+						// *--------------------*
+						// |     Target EIP     |	<- ESP - 4 point to here!
+						// *--------------------*
+						// |        EAX         |	<- ESP point to here!
+						// *--------------------*
+						// |       EFLAGS       |
+						// *--------------------*
+						// |        EBP         |
+						// *--------------------*
+						// |        EDI         |
+						// *--------------------*
+						// |        ESI         |
+						// *--------------------*
+						// |        EDX         |
+						// *--------------------*
+						// |        ECX         |
+						// *--------------------*
+						// |        EBX         |
+						// *--------------------*
+						// |        EAX         |
+						// *--------------------*
+						// |        ...         |
+						// |    Stack Bottom    |
 						"movl		%%eax, -4(%%esp)\n\t"
 						"popl		%%eax\n\t"
 						"popfl\n\t"
@@ -74,6 +115,30 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"popl		%%ecx\n\t"
 						"popl		%%ebx\n\t"
 						"popl		%%eax\n\t"
+						// |        ...         |
+						// *--------------------*
+						// |     Target EIP     |	<- ESP - 40 point to here!
+						// *--------------------*
+						// |        EAX         |	<- ESP - 36
+						// *--------------------*
+						// |       EFLAGS       |	<- ESP - 32
+						// *--------------------*
+						// |        EBP         |	<- ESP - 28
+						// *--------------------*
+						// |        EDI         |	<- ESP - 24
+						// *--------------------*
+						// |        ESI         |	<- ESP - 20
+						// *--------------------*
+						// |        EDX         |	<- ESP - 16
+						// *--------------------*
+						// |        ECX         |	<- ESP - 12
+						// *--------------------*
+						// |        EBX         |	<- ESP - 8
+						// *--------------------*
+						// |        EAX         |	<- ESP - 4
+						// *--------------------*
+						// |        ...         |	<- ESP point to here!
+						// |    Stack Bottom    |
 						"jmp		*10*-4(%%esp)\n\t"
 						:
 						:	"m"(target->esp),
