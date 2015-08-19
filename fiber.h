@@ -20,14 +20,12 @@ typedef	SSEStatus * SSEStatusPtr;
 
 typedef struct
 {
-	unsigned int		esp;						// Fiber stack pointer.
-	unsigned int		eip;						// Fiber instruction pointer.
-	unsigned int		null0;						// Reserved.
-	unsigned int		null1;						// Reserved.
-	SSEStatus			sse_status;					// SSE Context.
-	I387Status			i387_status;				// Intel 80387 Context.
-	int					first;						// 0 if first run, 1 if not first run.
-	unsigned char		stack[FIBER_STACK_SIZE];	// Fiber stack.
+	unsigned int		esp;										// Fiber stack pointer.
+	unsigned int		eip;										// Fiber instruction pointer.
+	SSEStatus			sse_status __attribute((aligned (16)));		// SSE Context.
+	I387Status			i387_status;								// Intel 80387 Context.
+	int					first;										// 0 if first run, 1 if not first run.
+	unsigned char		stack[FIBER_STACK_SIZE];					// Fiber stack.
 } Fiber, * FiberPtr;
 
 typedef void (* FiberFunction)(void);
