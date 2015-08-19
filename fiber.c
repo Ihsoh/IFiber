@@ -51,9 +51,9 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"movl		%0, %%esp\n\t"
 						"pushl		%%eax\n\t"
 						"movl		%1, %%eax\n\t"
-						"movl		%%eax, 4(%%esp)\n\t"
+						"movl		%%eax, -4(%%esp)\n\t"
 						"popl		%%eax\n\t"
-						"jmp		*(%%esp)\n\t"
+						"jmp		*2*-4(%%esp)\n\t"
 						:
 						:	"m"(target->esp),
 							"m"(target->eip));
@@ -64,7 +64,7 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"fxrstor	%3\n\t"
 						"pushl		%%eax\n\t"
 						"movl		%1, %%eax\n\t"
-						"movl		%%eax, 9*4(%%esp)\n\t"
+						"movl		%%eax, -4(%%esp)\n\t"
 						"popl		%%eax\n\t"
 						"popfl\n\t"
 						"popl		%%ebp\n\t"
@@ -74,7 +74,7 @@ int SwitchFiber(FiberPtr current, FiberPtr target)
 						"popl		%%ecx\n\t"
 						"popl		%%ebx\n\t"
 						"popl		%%eax\n\t"
-						"jmp		*(%%esp)\n\t"
+						"jmp		*10*-4(%%esp)\n\t"
 						:
 						:	"m"(target->esp),
 							"m"(target->eip),
